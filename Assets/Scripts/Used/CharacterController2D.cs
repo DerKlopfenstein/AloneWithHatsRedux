@@ -35,10 +35,32 @@ public class CharacterController2D: MonoBehaviour
 	public AudioSource winsound;
 
 
+	public GameObject gameControl;
+
+	//topHat
+	public GameObject bunny;
+	
+	//minimi
+	public GameObject backwardsCam;
+	
+	//doubleJump
+	bool activateDouble = false;
+	bool doubleEnabled = false;
+	
+	//fez
+	Vector3 startingPos;
+
+	// visual effects
+	public GameObject filter;
+
+
 
 	void Awake() 
     {
-
+		if(GameControl.instance == null) 
+		{
+			Instantiate(gameControl);
+		}
 	}
 	
 	// Use this for initialization
@@ -99,7 +121,10 @@ public class CharacterController2D: MonoBehaviour
 	
 	void Update() 
     {
-		Jump();
+		if(!activateDouble)
+			Jump ();
+		else 
+			DoubleJump();
 
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -120,6 +145,160 @@ public class CharacterController2D: MonoBehaviour
         }
 	}
 
+	void OnEnable()
+	{
+		GameControl.topHatKey += topHatstuff;
+		GameControl.propHatKey += propHatstuff;
+		GameControl.minimiKey += minimistuff;
+		GameControl.crownKey += crownstuff;
+		GameControl.mushroomKey += mushroomstuff;
+		GameControl.fedoraKey += fedorastuff;
+		GameControl.strawHatKey += strawHatstuff;
+		GameControl.fezKey += fezstuff;
+		GameControl.sombreroKey += sombrerostuff;
+		GameControl.pinkFloppyHatKey += pinkFloppyHatstuff;
+		GameControl.pilotHatKey += pilotHatstuff;
+	}
+	
+	void OnDisable()
+	{
+		GameControl.topHatKey -= topHatstuff;
+		GameControl.propHatKey -= propHatstuff;
+		GameControl.minimiKey -= minimistuff;
+		GameControl.crownKey -= crownstuff;
+		GameControl.mushroomKey -= mushroomstuff;
+		GameControl.fedoraKey -= fedorastuff;
+		GameControl.strawHatKey -= strawHatstuff;
+		GameControl.fezKey -= fezstuff;
+		GameControl.sombreroKey -= sombrerostuff;
+		GameControl.pinkFloppyHatKey -= pinkFloppyHatstuff;
+		GameControl.pilotHatKey -= pilotHatstuff;
+	}
+
+	//Make a bunny
+	void topHatstuff()
+	{
+		// Turn bool doubleEnabled in Jump() to true
+		MakeBunny();
+		Debug.Log ("HAT 1 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// doubleJump
+	void propHatstuff()
+	{
+		activateDouble = true;
+		Debug.Log ("HAT 2 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Reverse World
+	void minimistuff()
+	{
+		FlipWorld();
+		Debug.Log ("HAT 3 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Change to gold
+	void crownstuff()
+	{
+		anim.SetBool("turnedGold", true);
+		Debug.Log ("HAT 4 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Change background to different color (mushroom)
+	void mushroomstuff()
+	{
+		if(filter.activeSelf)
+			filter.SetActive(false);
+		else
+			filter.SetActive(true);
+		Debug.Log ("HAT 5 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Change background to different color (noir)
+	void fedorastuff()
+	{
+		if(filter.activeSelf)
+			filter.SetActive(false);
+		else
+			filter.SetActive(true);
+		Debug.Log ("HAT 6 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Make cow follow character
+	void strawHatstuff()
+	{
+		MakeBunny();
+		Debug.Log ("HAT 7 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Teleport player to beginning
+	void fezstuff()
+	{
+		//this is unfortunately hard-coded right now
+		transform.position = new Vector3(3.709676f, -2.673173f, 0);
+		Debug.Log ("HAT 8 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Speed up player
+	void sombrerostuff()
+	{
+		maxSpeed *= 2;
+		Debug.Log ("HAT 9 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Victorian Mode -- Maybe have multple cameras that have objects
+	void pinkFloppyHatstuff()
+	{
+		if(filter.activeSelf)
+			filter.SetActive(false);
+		else
+			filter.SetActive(true);
+		Debug.Log ("HAT 10 -- GameControl told the CharacterController to print this!");
+	}
+	
+	// Map controls to random keys
+	void pilotHatstuff()
+	{
+		Debug.Log ("HAT 11 -- GameControl told the CharacterController to print this!");
+	}
+
+	void MakeBunny() {
+		Debug.Log ("BUNNIES!");
+		GameObject bunnySpawn = (GameObject) Instantiate(bunny, transform.position, transform.rotation);
+	}
+
+	void FlipWorld() {
+		if(!backwardsCam.activeSelf)
+			backwardsCam.SetActive(true);
+		else
+			backwardsCam.SetActive(false);
+	}
+
+	void DoubleJump ()
+	{
+		
+		if ((grounded1 || grounded2) && Input.GetButtonDown ("Jump") && !floating) 
+		{
+			doubleEnabled = true;
+			rigidbody2D.AddForce(Vector2.up * jumpValue,ForceMode2D.Impulse);
+			jumpsound.Play();
+			Debug.Log ("First Jump: " + rigidbody2D.velocity);
+			
+		}
+		else if (!(grounded1 && grounded2) && Input.GetButtonDown ("Jump") && !floating && doubleEnabled) 
+		{
+			rigidbody2D.AddForce(Vector2.up * jumpValue,ForceMode2D.Impulse);
+			jumpsound.Play();
+			doubleEnabled = false;
+			Debug.Log ("Second Jump: " + rigidbody2D.velocity);
+		}
+		
+		if (Input.GetButton ("Jump") && (jumpTimer < 0.3 && rigidbody2D.velocity.y > 0) && !floating) 
+		{
+			rigidbody2D.AddForce(Vector2.up * increaseRate,ForceMode2D.Force);
+		}
+	}
+
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject == boulder && !(boulder.GetComponent<BoulderController>().IsStopped()))
@@ -132,6 +311,8 @@ public class CharacterController2D: MonoBehaviour
             hat.SendMessage("Return");
         }
     }
+
+
 
     void OnTriggerEnter2D(Collider2D other)
     {

@@ -6,13 +6,17 @@ using System.Collections;
 public class switchhat : MonoBehaviour 
 {
 
-    public Sprite tophat;
+	public Sprite tophat;
 	public Sprite strawhat;
 	public Sprite minimi;
-	public Sprite fungi;
+	public Sprite mushroom;
 	public Sprite fedora;
 	public Sprite crown;
 	public Sprite propeller;
+	public Sprite sombrero;
+	public Sprite fez;
+	public Sprite pilotHat;
+	public Sprite pinkFloppyHat;
 
     GameObject player;
 	AudioSource hatfallsoff;
@@ -39,48 +43,90 @@ public class switchhat : MonoBehaviour
                 hatfallsoff = source;
             }
         }
+
+		sprite = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
 	void Update()
     {
-		sprite = GetComponent<SpriteRenderer>();
 
+	}
 
-		if (Input.GetKeyDown(KeyCode.T)) 
-        {
-			sprite.sprite = tophat;
-		} 
-
-        else if (Input.GetKeyDown(KeyCode.C)) 
-        {
-			sprite.sprite = strawhat;
-		} 
-
-        else if (Input.GetKeyDown (KeyCode.F)) 
-        {
-			sprite.sprite = fedora;
-		} 
-
-        else if (Input.GetKeyDown (KeyCode.Y)) 
-        {
-			sprite.sprite = minimi;
-		} 
-
-        else if (Input.GetKeyDown (KeyCode.M)) 
-        {
-			sprite.sprite = fungi;
-		} 
-
-        else if (Input.GetKeyDown (KeyCode.K)) 
-        {
-			sprite.sprite = crown;
-		} 
-
-        else if (Input.GetKeyDown(KeyCode.B)) 
-        {
-			sprite.sprite = propeller;
-		}
+	void OnEnable() {
+		
+		GameControl.topHatKey += topHatsprite;
+		GameControl.propHatKey += propHatsprite;
+		GameControl.minimiKey += minimisprite;
+		GameControl.crownKey += crownsprite;
+		GameControl.mushroomKey += mushroomsprite;
+		GameControl.fedoraKey += fedorasprite;
+		GameControl.strawHatKey += strawHatsprite;
+		GameControl.fezKey += fezsprite;
+		GameControl.sombreroKey += sombrerosprite;
+		GameControl.pinkFloppyHatKey += pinkFloppyHatsprite;
+		GameControl.pilotHatKey += pilotHatsprite;
+		
+	}
+	
+	void OnDisable() {
+		
+		GameControl.topHatKey -= topHatsprite;
+		GameControl.propHatKey -= propHatsprite;
+		GameControl.minimiKey -= minimisprite;
+		GameControl.crownKey -= crownsprite;
+		GameControl.mushroomKey -= mushroomsprite;
+		GameControl.fedoraKey -= fedorasprite;
+		GameControl.strawHatKey -= strawHatsprite;
+		GameControl.fezKey -= fezsprite;
+		GameControl.sombreroKey -= sombrerosprite;
+		GameControl.pinkFloppyHatKey -= pinkFloppyHatsprite;
+		GameControl.pilotHatKey -= pilotHatsprite;
+		
+	}
+	
+	void topHatsprite() {
+		sprite.sprite = tophat;
+	}
+	
+	void propHatsprite() {
+		sprite.sprite = propeller;
+	}
+	
+	void crownsprite() {
+		sprite.sprite = crown;
+	}
+	
+	void minimisprite() {
+		sprite.sprite = minimi;
+	}
+	
+	void pilotHatsprite() {
+		sprite.sprite = pilotHat;
+	}
+	
+	void mushroomsprite() {
+		sprite.sprite = mushroom;
+	}
+	
+	void fedorasprite() {
+		sprite.sprite = fedora;
+	}
+	
+	void strawHatsprite() {
+		sprite.sprite = strawhat;
+	}
+	
+	void fezsprite() {
+		sprite.sprite = fez;
+	}
+	
+	void sombrerosprite() {
+		sprite.sprite = sombrero;
+	}
+	
+	void pinkFloppyHatsprite() {
+		sprite.sprite = pinkFloppyHat;
 	}
 
     void Escape()
