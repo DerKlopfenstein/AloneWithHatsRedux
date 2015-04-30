@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CharacterController2D: MonoBehaviour 
 {
+    //HERE I HAVE MADE A CHANGE TO THE SCRIPT
 	bool facingRight = true;
 	
 	float jumpValue = 5.0f;
